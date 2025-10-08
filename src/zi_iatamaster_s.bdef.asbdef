@@ -1,0 +1,57 @@
+managed with additional save implementation in class ZBP_I_IATAMASTER_S unique;
+strict;
+with draft;
+
+define behavior for ZI_IataMaster_S alias IataMasterAll
+draft table ZRE_IATA_D_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  field ( readonly )
+   SingletonID;
+
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _IataMaster { create ( features : instance ); with draft; }
+}
+
+define behavior for ZI_IataMaster alias IataMaster
+persistent table ZRE_IATA
+draft table ZRE_IATA_D
+etag master LocalLastChangedAt
+lock dependent by _IataMasterAll
+authorization dependent by _IataMasterAll
+
+{
+  field ( readonly )
+   SingletonID,
+   LastChangedAt,
+   LocalLastChangedAt;
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for ZRE_IATA
+  {
+    Code = CODE;
+    Description = DESCRIPTION;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _IataMasterAll { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

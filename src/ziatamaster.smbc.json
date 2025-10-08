@@ -1,0 +1,33 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain IATA master",
+    "originalLanguage": "en"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "ZUI_IATAMASTER_O4",
+    "serviceName": "ZUI_IATAMASTER_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "IataMasterAll",
+    "name": "IATA master",
+    "configurationGroup": "",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "IataMasterAll",
+        "variantManagement": "control"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "IataMaster",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "rowCountMode": "auto"
+      }
+    ]
+  }
+}

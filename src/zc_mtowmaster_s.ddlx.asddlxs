@@ -1,0 +1,44 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'MtowMasterAll'
+  }
+}
+annotate view ZC_MtowMaster_S with
+{
+  @UI.facet: [ {
+    id: 'Transport', 
+    purpose: #STANDARD, 
+    type: #IDENTIFICATION_REFERENCE, 
+    label: 'Transport', 
+    position: 1 , 
+    hidden: #(HideTransport)
+  }, 
+  {
+    id: 'ZI_MtowMaster', 
+    purpose: #STANDARD, 
+    type: #LINEITEM_REFERENCE, 
+    label: 'MTOW Master', 
+    position: 2 , 
+    targetElement: '_MtowMaster'
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  SingletonID;
+  
+  @UI.hidden: true
+  HideTransport;
+  
+//  @UI.identification: [ {
+//    position: 2 , 
+//    importance: #HIGH
+//  }, 
+//  {
+//    type: #FOR_ACTION, 
+//    dataAction: 'SelectCustomizingTransptReq', 
+//    label: 'Select Transport'
+//  } ]
+  @UI.hidden: true
+  TransportRequestID;
+}

@@ -1,0 +1,5 @@
+@MappingRole: true
+define role ZC_AircraftMaster {
+  grant select on ZC_AircraftMaster
+  where INHERITING CONDITIONS FROM ENTITY ZI_AircraftMaster;
+}

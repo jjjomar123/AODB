@@ -1,0 +1,44 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'IataMaster', 
+    typeNamePlural: 'IataMasters', 
+    title: {
+      type: #STANDARD, 
+      label: 'IATA master', 
+      value: 'Uuid'
+    }
+  }
+}
+annotate view ZC_IataMaster with
+{
+  @UI.identification: [ {
+    position: 1 
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  @UI.facet: [ {
+    id: 'ZI_IataMaster', 
+    purpose: #STANDARD, 
+    type: #IDENTIFICATION_REFERENCE, 
+    label: 'IATA master', 
+    position: 1 
+  } ]  
+  @EndUserText.label: 'Code'
+  Code;
+  
+  @UI.identification: [ {
+    position: 3
+  } ]
+  @UI.lineItem: [ {
+    position: 3
+  } ]
+  @EndUserText.label: 'Description'
+  Description;
+  
+  @UI.identification: [ {
+    position: 4 
+  } ]
+  LastChangedAt;
+}

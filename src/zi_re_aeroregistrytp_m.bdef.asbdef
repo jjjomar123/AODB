@@ -1,0 +1,31 @@
+managed implementation in class zbp_i_re_aeroregistrytp_m unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZI_RE_AeroRegistryTP_M alias AeroRegistry
+persistent table zre_aeroregistry
+draft table zre_aeroregist_d
+lock master
+total etag LastChangedAt
+authorization master ( instance )
+etag master LocalLastChangedAt
+
+{
+  create;
+  update;
+  delete;
+
+  field ( readonly, numbering : managed ) Uuid;
+  field ( readonly ) Mtowcategory, LocalCreatedAt, LocalCreatedBy, LastChangedAt, LocalLastChangedAt, LocalLastChangedBy;
+  field ( mandatory ) Airlinecode, Rpcid, Iatacode, Mtowquantity, Mtowunit;
+
+  action fileUpload parameter ZABS_RE_RegistryFileUpload;
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for zre_aeroregistry corresponding;
+}

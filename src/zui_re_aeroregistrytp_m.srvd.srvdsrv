@@ -1,0 +1,5 @@
+@EndUserText.label: 'Aero Registry Service Definition'
+@ObjectModel.leadingEntity.name: 'ZC_RE_AEROREGISTRYTP_M'
+define service ZUI_RE_AeroRegistryTP_M {
+  expose ZC_RE_AeroRegistryTP_M as AeroRegistry;
+}

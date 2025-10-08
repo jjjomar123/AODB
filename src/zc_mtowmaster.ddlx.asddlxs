@@ -1,0 +1,60 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'MtowMaster', 
+    typeNamePlural: 'MtowMasters', 
+    title: {
+      type: #STANDARD, 
+      label: 'MTOW Master', 
+      value: 'Category'
+    }
+  }
+}
+annotate view ZC_MtowMaster with
+{
+  @UI.identification: [ {
+    position: 1 , 
+    label: 'Category'
+  } ]
+  @UI.lineItem: [ {
+    position: 1 , 
+    label: 'Category'
+  }, 
+  {
+    type: #FOR_ACTION, 
+    dataAction: 'CopyMtowMaster', 
+    label: 'Copy Selected Entry', 
+    invocationGrouping: #CHANGE_SET
+  } ]
+  @UI.facet: [ {
+    id: 'ZI_MtowMaster', 
+    purpose: #STANDARD, 
+    type: #IDENTIFICATION_REFERENCE, 
+    label: 'MTOW Master', 
+    position: 1 
+  } ]
+  @EndUserText.label: 'Category'
+  Category;
+  
+  @UI.identification: [ {
+    position: 2
+  } ]
+  @UI.lineItem: [ {
+    position: 2
+  } ]
+  @EndUserText.label: 'From'
+  Qtyfrom;
+  
+  @UI.identification: [ {
+    position: 3
+  } ]
+  @UI.lineItem: [ {
+    position: 3 
+  } ]
+  @EndUserText.label: 'To'
+  Qtyto;
+  @UI.identification: [ {
+    position: 4 
+  } ]
+  LastChangedAt;
+}

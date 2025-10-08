@@ -1,0 +1,50 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'AircraftMaster', 
+    typeNamePlural: 'AircraftMasters', 
+    title: {
+      type: #STANDARD, 
+      label: 'Aircraft Master', 
+      value: 'Uuid'
+    }
+  }
+}
+annotate view ZC_AircraftMaster with
+{
+  @UI.identification: [ {
+    position: 1 
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  }, 
+  {
+    type: #FOR_ACTION, 
+    dataAction: 'CopyAircraftMaster', 
+    label: 'Copy Selected Entry', 
+    invocationGrouping: #CHANGE_SET
+  } ]
+  @UI.facet: [ {
+    id: 'ZI_AircraftMaster', 
+    purpose: #STANDARD, 
+    type: #IDENTIFICATION_REFERENCE, 
+    label: 'Aircraft Master', 
+    position: 1 
+  } ]
+  @EndUserText.label: 'Aircarft'
+  Type;
+  
+  @UI.identification: [ {
+    position: 3
+  } ]
+  @UI.lineItem: [ {
+    position: 3
+  } ]
+  @EndUserText.label: 'Description'
+  Description;
+  
+  @UI.identification: [ {
+    position: 4 
+  } ]
+  LastChangedAt;
+}

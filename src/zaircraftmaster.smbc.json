@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Aircraft Master",
+    "originalLanguage": "en"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "ZUI_AIRCRAFTMASTER_O4",
+    "serviceName": "ZUI_AIRCRAFTMASTER_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "AircraftMasterAll",
+    "name": "Aircraft Master",
+    "configurationGroup": "",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "AircraftMasterAll",
+        "variantManagement": "control"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "AircraftMaster",
+        "tableType": "gridTable",
+        "selectionMode": "single",
+        "creationModeName": "creationRow",
+        "rowCountMode": "auto"
+      }
+    ]
+  }
+}

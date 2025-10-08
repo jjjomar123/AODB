@@ -1,0 +1,4 @@
+define service ZUI_AIRCRAFTMASTER {
+  expose ZC_AIRCRAFTMASTER_S as AircraftMasterAll;
+  expose ZC_AIRCRAFTMASTER as AircraftMaster;
+}

@@ -1,0 +1,4 @@
+define service ZUI_MTOWMASTER {
+  expose ZC_MTOWMASTER_S as MtowMasterAll;
+  expose ZC_MTOWMASTER as MtowMaster;
+}

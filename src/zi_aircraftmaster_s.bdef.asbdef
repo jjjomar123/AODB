@@ -1,0 +1,59 @@
+managed with additional save implementation in class ZBP_I_AIRCRAFTMASTER_S unique;
+strict;
+with draft;
+
+define behavior for ZI_AircraftMaster_S alias AircraftMasterAll
+draft table ZRE_AIRCRAFT_D_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  field ( readonly )
+   SingletonID;
+
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _AircraftMaster { create ( features : instance ); with draft; }
+}
+
+define behavior for ZI_AircraftMaster alias AircraftMaster
+persistent table ZRE_AIRCRAFT
+draft table ZRE_AIRCRAFT_D
+etag master LocalLastChangedAt
+lock dependent by _AircraftMasterAll
+authorization dependent by _AircraftMasterAll
+
+{
+  field ( readonly )
+   SingletonID,
+   LastChangedAt,
+   LocalLastChangedAt;
+
+  update( features : global );
+  delete( features : global );
+
+  factory action ( features : instance ) CopyAircraftMaster [1];
+
+  mapping for ZRE_AIRCRAFT
+  {
+    Type = TYPE;
+    Description = DESCRIPTION;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _AircraftMasterAll { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

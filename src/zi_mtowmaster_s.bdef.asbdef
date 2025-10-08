@@ -1,0 +1,67 @@
+managed with additional save implementation in class ZBP_I_MTOWMASTER_S unique;
+strict;
+with draft;
+
+define behavior for ZI_MtowMaster_S alias MtowMasterAll
+draft table ZRE_MTOW_D_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  field ( readonly )
+   SingletonID;
+
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _MtowMaster { create ( features : instance ); with draft; }
+}
+
+define behavior for ZI_MtowMaster alias MtowMaster
+persistent table ZRE_MTOW
+draft table ZRE_MTOW_D
+etag master LocalLastChangedAt
+lock dependent by _MtowMasterAll
+authorization dependent by _MtowMasterAll
+
+{
+  field ( mandatory : create )
+   Category;
+
+  field ( readonly )
+   SingletonID,
+   LastChangedAt,
+   LocalLastChangedAt;
+
+  field ( readonly : update )
+   Category;
+
+
+  update( features : global );
+  delete( features : global );
+
+  factory action ( features : instance ) CopyMtowMaster parameter ZD_CopyMtowMasterP [1];
+
+  mapping for ZRE_MTOW
+  {
+    Category = CATEGORY;
+    Qtyfrom = QTYFROM;
+    Qtyto = QTYTO;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _MtowMasterAll { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

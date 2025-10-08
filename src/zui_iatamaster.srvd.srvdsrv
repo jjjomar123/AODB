@@ -1,0 +1,4 @@
+define service ZUI_IATAMASTER {
+  expose ZC_IATAMASTER_S as IataMasterAll;
+  expose ZC_IATAMASTER as IataMaster;
+}

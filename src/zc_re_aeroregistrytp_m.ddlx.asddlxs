@@ -1,0 +1,81 @@
+@Metadata.layer: #CUSTOMER
+@UI:{
+  headerInfo: { typeName: 'Airline Registry', typeNamePlural: 'Airline Registry', title: { value: 'Uuid' }, typeImageUrl: 'sap-icon://flight' }
+}
+annotate entity ZC_RE_AeroRegistryTP_M
+  with 
+{
+  @UI.facet: [
+               {
+                  id:            'AirlineRegistry',
+                  purpose:       #STANDARD,
+                  type:          #FIELDGROUP_REFERENCE,
+                  label:         'Registry',
+                  targetQualifier: 'AIRLINE_INFO',
+                  position:      10
+                },
+                {
+                  id:            'Mtow',
+                  purpose:       #STANDARD,
+                  type:          #FIELDGROUP_REFERENCE,
+                  label:         'MTOW Details',
+                  targetQualifier: 'MTOW_INFO',
+                  position:      20
+                },
+                {
+                  id:            'AdminData',
+                  purpose:       #STANDARD,
+                  type:          #FIELDGROUP_REFERENCE,
+                  label:         'Change log',
+                  targetQualifier: 'ADMINDATA',
+                  position:      30
+                }
+              ]
+  @UI.hidden: true
+  Uuid;
+  @UI: { lineItem:       [ { position: 1 } ],
+         selectionField: [ { position: 1 } ],
+         textArrangement: #TEXT_FIRST,
+         fieldGroup:     [ { position: 1, qualifier: 'AIRLINE_INFO' } ] }
+  @EndUserText.label: 'Airline'  
+  Airlinecode;
+  @UI: { lineItem:       [ { position: 2 } ],
+         selectionField: [ { position: 2 } ],
+         fieldGroup:     [ { position: 2, qualifier: 'AIRLINE_INFO' } ] }
+  @EndUserText.label: 'Registry'    
+  Rpcid;
+  @UI: { lineItem:       [ { position: 3 } ],
+         selectionField: [ { position: 3 } ],
+         textArrangement: #TEXT_FIRST,
+         fieldGroup:     [ { position: 3, qualifier: 'AIRLINE_INFO' } ] }
+  @EndUserText.label: 'IATA Code'    
+  Iatacode;
+  @UI: { lineItem:       [ { position: 4 } ],
+         selectionField: [ { position: 4 } ],
+         textArrangement: #TEXT_FIRST,
+         fieldGroup:     [ { position: 4, qualifier: 'AIRLINE_INFO' } ] }
+  @EndUserText.label: 'Aircraft'     
+  Aircrafttype;
+  @UI: { lineItem:       [ { position: 5 } ],
+         fieldGroup:     [ { position: 1, qualifier: 'MTOW_INFO' } ] }
+  @EndUserText.label: 'MTOW'     
+  Mtowquantity;
+  @UI.hidden: true
+  Mtowunit;
+  @UI: { lineItem:       [ { position: 6 } ] ,
+         selectionField: [ { position: 6 } ],
+         textArrangement: #TEXT_FIRST,
+         fieldGroup:     [ { position: 2, qualifier: 'MTOW_INFO' } ] }
+  @EndUserText.label: 'Category'      
+  Mtowcategory;
+  @UI: { fieldGroup:     [ { position: 1, qualifier: 'ADMINDATA' } ] } 
+  Localcreatedby;
+  @UI: { fieldGroup:     [ { position: 2, qualifier: 'ADMINDATA' } ] }  
+  Localcreatedat;
+  @UI: { fieldGroup:     [ { position: 3, qualifier: 'ADMINDATA' } ] }   
+  Locallastchangedby;
+  @UI: { fieldGroup:     [ { position: 4, qualifier: 'ADMINDATA' } ] } 
+  Locallastchangedat;
+  @UI.hidden: true
+  Lastchangedat;
+}
