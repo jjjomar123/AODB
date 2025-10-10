@@ -1,0 +1,55 @@
+@Metadata.layer: #CUSTOMER
+annotate entity ZC_RE_RevenueStreamCNSTP_M with
+{
+  @UI.facet: [ {
+         id: 'Considerations',
+         purpose: #STANDARD,
+         label: 'Considerations',
+         type: #IDENTIFICATION_REFERENCE,
+         position: 10
+     } ]
+  @UI.hidden: true
+  Streamuuid;
+  @UI.hidden: true
+  Streamitemuuid;
+  @UI.hidden: true
+  Cnsderationuuid;
+  @UI: { lineItem:       [ { position: 10 } ],
+         identification: [ { position: 10 } ] }
+  @EndUserText.label: 'Free'
+  Free;
+  @UI: { lineItem:       [ { position: 20 } ],
+         identification: [ { position: 20 } ] }
+  @EndUserText.label: 'First half'
+  Firsthalf;
+  @UI: { lineItem:       [ { position: 30 } ],
+         identification: [ { position: 30 } ] }
+  @EndUserText.label: 'Succeeding'
+  Succeeding;
+  @UI: { lineItem:       [ { position: 40 } ],
+         identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Chargeable Start Time'
+  Starttime;
+  @UI: { lineItem:       [ { position: 50 } ],
+         identification: [ { position: 50 } ] }
+  @EndUserText.label: 'Chargeable End Time'
+  Endtime;
+  @UI: { lineItem:       [ { position: 60 } ],
+         identification: [ { position: 60 } ] }
+  @EndUserText.label: 'Active'
+  Status;
+  @UI: { lineItem:       [ { position: 70 } ],
+         identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Valid From'
+  Validfrom;
+  @UI: { lineItem:       [ { position: 70 } ],
+         identification: [ { position: 70 } ] }
+  @EndUserText.label: 'Valid To'
+  Validto;
+  @UI: { lineItem:       [ { position: 80 } ],
+         identification: [ { position: 80 } ] }
+  Locallastchangedat;
+  @UI.hidden: true
+  Baseunitofmeasure;
+
+}

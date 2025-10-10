@@ -1,0 +1,91 @@
+@Metadata.layer: #CUSTOMER
+@UI:{
+  headerInfo: { typeName: 'Revenue Stream', typeNamePlural: 'Revenue Streams', title: { type: #STANDARD, value: 'Streamuuid' } }
+}
+@UI: {
+  presentationVariant: [
+    { 
+      qualifier: 'pVariant',
+      sortOrder: [
+        {
+          by: 'Localcreatedat',
+          direction: #DESC
+        }
+      ],
+      visualizations: [{type: #AS_LINEITEM}]
+    }
+  ],
+  selectionPresentationVariant: [
+    { 
+      presentationVariantQualifier: 'pVariant'
+    }
+  ]
+}
+annotate entity ZC_RE_RevenueStreamTP_M with
+{
+  @UI.facet: [
+               { 
+                id: 'RevenueStream',
+                type: #COLLECTION,
+                label: 'General',
+                position: 10
+               },
+                 {
+                    id:            'HeaderDetail',
+                    parentId:      'RevenueStream',
+                    purpose:       #STANDARD,
+                    type:          #FIELDGROUP_REFERENCE,
+                    label:         'Revenue Stream',
+                    targetQualifier: 'STREAM_INFO',
+                    position:      10
+                  },
+                  {
+                    id:            'AdminData',
+                    parentId:      'RevenueStream',
+                    purpose:       #STANDARD,
+                    type:          #FIELDGROUP_REFERENCE,
+                    label:         'Change log',
+                    targetQualifier: 'ADMINDATA',
+                    position:      20
+                  },
+                { 
+                  id:            'ItemDetails',
+                  purpose:       #STANDARD,
+                  type:          #LINEITEM_REFERENCE,
+                  label:         'Items',
+                  targetElement: '_Item',
+                  position:      20                  
+                }
+             ]
+  @UI.hidden: true
+  Streamuuid;
+  @UI: { lineItem:       [ { position: 10 } ],
+         selectionField: [ { position: 10 } ],
+         fieldGroup   :  [ { position: 10, qualifier: 'STREAM_INFO' } ],
+         textArrangement: #TEXT_LAST }
+  Comapnycode;
+  @UI: { lineItem:       [ { position: 20 } ],
+         selectionField: [ { position: 20 } ],
+         fieldGroup   :  [ { position: 20, qualifier: 'STREAM_INFO' } ] }
+  @EndUserText.label: 'Code'       
+  Code;
+  @UI: { lineItem:       [ { position: 30 } ],
+         fieldGroup   :  [ { position: 30, qualifier: 'STREAM_INFO' } ] }
+  @EndUserText.label: 'Name' 
+  Name;
+  @UI: { lineItem:       [ { position: 40 } ],
+         fieldGroup   :  [ { position: 10, qualifier: 'ADMINDATA' } ] }  
+  Localcreatedby;
+  @UI: { lineItem:       [ { position: 50 } ],
+         fieldGroup   :  [ { position: 20, qualifier: 'ADMINDATA' } ] }  
+  Localcreatedat;
+  @UI: { lineItem:       [ { position: 60 } ],
+         fieldGroup   :  [ { position: 30, qualifier: 'ADMINDATA' } ] }   
+  Locallastchangedby;
+  @UI: { lineItem:       [ { position: 70 } ],
+         fieldGroup   :  [ { position: 40, qualifier: 'ADMINDATA' } ] }    
+  Locallastchangedat;
+  @UI.hidden: true
+  Lastchangedat;
+
+}

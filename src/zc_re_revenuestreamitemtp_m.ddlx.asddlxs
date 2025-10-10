@@ -1,0 +1,57 @@
+@Metadata.layer: #CUSTOMER
+annotate entity ZC_RE_RevenueStreamItemTP_M with
+{
+  @UI.facet: [
+               {
+                  id:            'FlightNature',
+                  purpose:       #STANDARD,
+                  type:          #FIELDGROUP_REFERENCE,
+                  label:         'Revenue Stream',
+                  targetQualifier: 'NATURE_INFO',
+                  position:      10
+                },
+                { 
+                  id:            'RoundOff',
+                  purpose:       #STANDARD,
+                  type:          #LINEITEM_REFERENCE,
+                  label:         'Round-off',
+                  targetElement: '_Round',
+                  position:      20                  
+                },
+                { 
+                  id:            'Consideration',
+                  purpose:       #STANDARD,
+                  type:          #LINEITEM_REFERENCE,
+                  label:         'Considetrations',
+                  targetElement: '_Consideration',
+                  position:      30                  
+                },
+                { 
+                  id:            'CalculationRule',
+                  purpose:       #STANDARD,
+                  type:          #LINEITEM_REFERENCE,
+                  label:         'Calculation Rule',
+                  targetElement: '_Calcrule',
+                  position:      40                  
+                }
+             ]
+  @UI.hidden: true
+  Streamuuid;
+  @UI.hidden: true
+  Streamitemuuid;
+  @UI: { lineItem:       [ { position: 10 } ],
+         fieldGroup   :  [ { position: 10, qualifier: 'NATURE_INFO' } ] } 
+  @EndUserText.label: 'Nature of flight' 
+  Nature;
+  @UI: { lineItem:       [ { position: 20 } ],
+         fieldGroup   :  [ { position: 20, qualifier: 'NATURE_INFO' } ] }
+  @EndUserText.label: 'Goverment Share' 
+  Govermenttshare;
+  @UI: { lineItem:       [ { position: 30 } ],
+         fieldGroup   :  [ { position: 30, qualifier: 'NATURE_INFO' } ] }    
+  Baseunitofmeasure;
+  @UI: { lineItem:       [ { position: 40 } ],
+         fieldGroup   :  [ { position: 40, qualifier: 'NATURE_INFO' } ] }    
+  Locallastchangedat;
+
+}

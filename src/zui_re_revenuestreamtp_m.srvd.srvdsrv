@@ -1,0 +1,9 @@
+@EndUserText.label: 'Revenue Stream'
+@ObjectModel.leadingEntity.name: 'ZC_RE_REVENUESTREAMTP_M'
+define service ZUI_RE_REVENUESTREAMTP_M {
+  expose ZC_RE_RevenueStreamTP_M        as RevenueStream;
+  expose ZC_RE_RevenueStreamItemTP_M    as StreamItem;
+  expose ZC_RE_RevenueStreamRNDTP_M     as Roundoff;
+  expose ZC_RE_RevenueStreamCNSTP_M     as Consideration;
+  expose ZC_RE_RevenueStreamCALCRU_TP_M as AMRCalcRule;
+}

@@ -1,0 +1,96 @@
+managed implementation in class zbp_i_re_revenuestreamtp_m unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZI_RE_RevenueStreamTP_M alias Header
+persistent table zre_rvnstreamhdr
+draft table zre_rvnstreamhdd
+lock master
+total etag LastChangedAt
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+  field ( readonly, numbering : managed ) Streamuuid;
+  field ( readonly ) LocalCreatedAt, LocalCreatedBy, LastChangedAt, LocalLastChangedAt, LocalLastChangedBy;
+  association _Item { create; with draft; }
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for zre_rvnstreamhdr corresponding ;
+}
+
+define behavior for ZI_RE_RevenueStreamItemTP_M alias Item
+persistent table zre_rvnstrmitem
+draft table zre_rvnstrmitemd
+lock dependent by _Root
+authorization dependent by _Root
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  field ( readonly ) Streamuuid, Locallastchangedat;
+  field ( readonly, numbering : managed ) Streamitemuuid;
+  association _Root { with draft; }
+  association _Calcrule { create; with draft; }
+  association _Consideration { create; with draft; }
+  association _Round { create; with draft; }
+
+  mapping for zre_rvnstrmitem corresponding ;
+}
+
+define behavior for ZI_RE_RevenueStreamCALCRU_TP_M alias CalculationRule
+persistent table zre_rvnamrcalcr
+draft table zre_rvnamrcalcrd
+lock dependent by _Root
+authorization dependent by _Root
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  field ( readonly ) Streamuuid, Streamitemuuid, Locallastchangedat;
+  field ( readonly, numbering : managed ) Calcruleuuid;
+  association _Item { with draft; }
+  association _Root { with draft; }
+
+  mapping for zre_rvnamrcalcr corresponding ;
+}
+
+define behavior for ZI_RE_RevenueStreamCNSTP_M alias Consideration
+persistent table zre_rvnstmconsd
+draft table zre_rvnstmconsdd
+lock dependent by _Root
+authorization dependent by _Root
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  field ( readonly ) Streamuuid, Streamitemuuid, Locallastchangedat, Baseunitofmeasure;
+  field ( readonly, numbering : managed ) Cnsderationuuid;
+  association _Item { with draft; }
+  association _Root { with draft; }
+
+  mapping for zre_rvnstmconsd corresponding ;
+}
+
+define behavior for ZI_RE_RevenueStreamRNDTP_M alias Roundoff
+persistent table zre_rvnstmround
+draft table zre_rvnstmroundd
+lock dependent by _Root
+authorization dependent by _Root
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  field ( readonly ) Streamuuid, Streamitemuuid, Locallastchangedat, Baseunitofmeasure;
+  field ( readonly, numbering : managed ) Roundoffuuid;
+  association _Item { with draft; }
+  association _Root { with draft; }
+  mapping for zre_rvnstmround corresponding ;
+}

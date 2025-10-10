@@ -1,0 +1,37 @@
+@Metadata.layer: #CUSTOMER
+annotate entity ZC_RE_RevenueStreamCALCRU_TP_M with
+{
+  @UI.facet: [ {
+         id: 'CalculationRule',
+         purpose: #STANDARD,
+         label: 'AMR Calculation Rule',
+         type: #IDENTIFICATION_REFERENCE,
+         position: 10
+     } ]
+  @UI.hidden: true
+  Streamuuid;
+  @UI.hidden: true
+  Streamitemuuid;
+  @UI.hidden: true
+  Calcruleuuid;
+  @UI: { lineItem:       [ { position: 10 } ],
+         identification: [ { position: 10 } ] }
+  @EndUserText.label: 'Calculation Rule'
+  Calculationrule;
+  @UI: { lineItem:       [ { position: 20 } ],
+         identification: [ { position: 20 } ] }
+  @EndUserText.label: 'Succeeding Measurement Type'  
+  Succeedingrate;
+  @UI: { lineItem:       [ { position: 30 } ],
+         identification: [ { position: 30 } ] }
+  @EndUserText.label: 'Differing Measurement Type'  
+  Differingmeasurement;
+  @UI: { lineItem:       [ { position: 40 } ],
+         identification: [ { position: 40 } ] }
+  @EndUserText.label: 'Succeeding Measurement Type' 
+  Succeedingmeasurement;
+  @UI: { lineItem:       [ { position: 50 } ],
+         identification: [ { position: 50 } ] }
+  Locallastchangedat;
+
+}
