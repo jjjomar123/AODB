@@ -1,4 +1,23 @@
 @Metadata.layer: #CUSTOMER
+@UI: {
+  presentationVariant: [
+    { 
+      qualifier: 'pVariant',
+      sortOrder: [
+        {
+          by: 'Validto',
+          direction: #DESC
+        }
+      ],
+      visualizations: [{type: #AS_LINEITEM}]
+    }
+  ],
+  selectionPresentationVariant: [
+    { 
+      presentationVariantQualifier: 'pVariant'
+    }
+  ]
+}
 annotate entity ZC_RE_RevenueStreamCNSTP_M with
 {
   @UI.facet: [ {
@@ -34,20 +53,19 @@ annotate entity ZC_RE_RevenueStreamCNSTP_M with
          identification: [ { position: 50 } ] }
   @EndUserText.label: 'Chargeable End Time'
   Endtime;
-  @UI: { lineItem:       [ { position: 60 } ],
-         identification: [ { position: 60 } ] }
+  @UI: { lineItem:       [ { position: 60 } ] }
   @EndUserText.label: 'Active'
   Status;
   @UI: { lineItem:       [ { position: 70 } ],
          identification: [ { position: 70 } ] }
   @EndUserText.label: 'Valid From'
   Validfrom;
-  @UI: { lineItem:       [ { position: 70 } ],
-         identification: [ { position: 70 } ] }
-  @EndUserText.label: 'Valid To'
-  Validto;
   @UI: { lineItem:       [ { position: 80 } ],
          identification: [ { position: 80 } ] }
+  @EndUserText.label: 'Valid To'
+  Validto;
+  @UI: { lineItem:       [ { position: 90 } ],
+         identification: [ { position: 90 } ] }
   Locallastchangedat;
   @UI.hidden: true
   Baseunitofmeasure;

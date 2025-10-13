@@ -1,4 +1,7 @@
 @Metadata.layer: #CUSTOMER
+@UI.createHidden: true
+@UI.updateHidden: true
+@UI.deleteHidden: true
 annotate entity ZC_RE_RevenueStreamItemTP_M with
 {
   @UI.facet: [
@@ -21,7 +24,7 @@ annotate entity ZC_RE_RevenueStreamItemTP_M with
                 { 
                   id:            'Consideration',
                   purpose:       #STANDARD,
-                  type:          #LINEITEM_REFERENCE,
+                  type:          #SELECTIONPRESENTATIONVARIANT_REFERENCE,
                   label:         'Considetrations',
                   targetElement: '_Consideration',
                   position:      30                  
