@@ -1,24 +1,22 @@
 CLASS lhc_consideration DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
   PRIVATE SECTION.
-    TYPES: tt_consieration_key TYPE TABLE FOR KEY OF zi_re_revenuestreamtp_m\\consideration,
-           tt_reported TYPE RESPONSE FOR REPORTED LATE zi_re_revenuestreamtp_m,
-           tt_failed TYPE RESPONSE FOR FAILED LATE zi_re_revenuestreamtp_m,
-           tt_consideration_data TYPE TABLE FOR READ RESULT zi_re_revenuestreamtp_m\\item\_consideration,
-           tt_link TYPE TABLE FOR READ LINK zi_re_revenuestreamtp_m\\item\_consideration.
 
     METHODS validate_consideration
-      IMPORTING considerations     TYPE tt_consideration_data
-                consideration_link TYPE tt_link
+      IMPORTING dto                TYPE zif_re_revenuestream=>ts_consideration
+                consideration_link TYPE zif_re_revenuestream=>tt_link
                 state_area         TYPE string
-       CHANGING failed             TYPE tt_failed
-                reported           TYPE tt_reported.
+                exists             TYPE boolean OPTIONAL
+      CHANGING  failed             TYPE zif_re_revenuestream=>tt_failed
+                reported           TYPE zif_re_revenuestream=>tt_reported.
 
     METHODS chargeableTime FOR VALIDATE ON SAVE
       IMPORTING keys FOR Consideration~chargeableTime.
 
-    METHODS validity FOR VALIDATE ON SAVE
-      IMPORTING keys FOR Consideration~validity.
+    METHODS validityrange FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Consideration~validityrange.
+    METHODS validentryexists FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Consideration~validentryexists.
 
 ENDCLASS.
 
@@ -26,39 +24,51 @@ CLASS lhc_consideration IMPLEMENTATION.
 
   METHOD validate_consideration.
 
-    LOOP AT considerations INTO DATA(dto).
-      APPEND VALUE #( %tky             = dto-%tky
-                      %state_area      = state_area
-                      %path            = VALUE #( header-%tky = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky
-                                                  item-%tky   = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky )
-                      %element-Endtime = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-chargeable THEN if_abap_behv=>mk-off )
-                      %element-Validto = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-validity THEN if_abap_behv=>mk-off ) ) TO reported-consideration.
+    APPEND VALUE #( %tky             = dto-%tky
+                    %state_area      = state_area
+                    %path            = VALUE #( header-%tky = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky
+                                                item-%tky   = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky )
+                    %element-Endtime = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-chargeable THEN if_abap_behv=>mk-off )
+                    %element-Validfrom = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-validexists THEN if_abap_behv=>mk-off )
+                    %element-Validto = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-validity
+                                                OR state_area EQ zif_re_revenuestream=>state_area-validexists
+                                                THEN if_abap_behv=>mk-off ) ) TO reported-consideration.
 
-      IF state_area EQ zif_re_revenuestream=>state_area-chargeable.
+    CASE state_area.
+      WHEN zif_re_revenuestream=>state_area-chargeable.
         IF dto-Starttime GT dto-Endtime.
           DATA(e) = abap_true.
+          DATA(msg) = zif_re_revenuestream=>message_v-valuerange.
         ENDIF.
-      ELSEIF state_area EQ zif_re_revenuestream=>state_area-validity.
+      WHEN zif_re_revenuestream=>state_area-validity.
         IF dto-Validfrom GT dto-Validto.
           e = abap_true.
+          msg = zif_re_revenuestream=>message_v-valuerange.
         ENDIF.
-      ENDIF.
+      WHEN zif_re_revenuestream=>state_area-validexists.
+        IF exists EQ abap_true.
+          e = abap_true.
+          msg = 'Overlapping period is not allowed'.
+        ENDIF.
+    ENDCASE.
 
-      IF e EQ abap_true.
-        APPEND VALUE #( %tky = dto-%tky ) TO failed-consideration.
+    IF e EQ abap_true.
+      APPEND VALUE #( %tky = dto-%tky ) TO failed-consideration.
 
-        APPEND VALUE #( %tky             = dto-%tky
-                        %state_area      = state_area
-                        %msg             = new_message( id       = zif_re_revenuestream=>msgid
-                                                        number   = zif_re_revenuestream=>msgno
-                                                        severity = if_abap_behv_message=>severity-error
-                                                        v1       = 'Invalid value range' )
-                        %path            = VALUE #( header-%tky = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky
-                                                    item-%tky   = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky )
-                        %element-Endtime = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-chargeable THEN if_abap_behv=>mk-on )
-                        %element-Validto = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-validity THEN if_abap_behv=>mk-on ) ) TO reported-consideration.
-      ENDIF.
-    ENDLOOP.
+      APPEND VALUE #( %tky             = dto-%tky
+                      %state_area      = state_area
+                      %msg             = new_message( id       = zif_re_revenuestream=>msgid
+                                                      number   = zif_re_revenuestream=>msgcommon
+                                                      severity = if_abap_behv_message=>severity-error
+                                                      v1       = msg )
+                      %path            = VALUE #( header-%tky = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky
+                                                  item-%tky   = consideration_link[ KEY id  source-%tky = dto-%tky ]-target-%tky )
+                      %element-Endtime = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-chargeable THEN if_abap_behv=>mk-on )
+                      %element-Validfrom = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-validexists THEN if_abap_behv=>mk-on )
+                      %element-Validto   = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-validity
+                                                    OR state_area EQ zif_re_revenuestream=>state_area-validexists
+                                                    THEN if_abap_behv=>mk-on ) ) TO reported-consideration.
+    ENDIF.
   ENDMETHOD.
 
   METHOD chargeableTime.
@@ -68,25 +78,61 @@ CLASS lhc_consideration IMPLEMENTATION.
     RESULT DATA(considerations)
     LINK DATA(consideration_link).
 
-    validate_consideration( EXPORTING considerations = considerations
-                                      consideration_link = consideration_link
-                                      state_area = zif_re_revenuestream=>state_area-chargeable
-                            CHANGING  failed = failed
-                                      reported = reported ).
+    LOOP AT considerations INTO DATA(dto).
+      validate_consideration( EXPORTING dto = dto
+                                        consideration_link = consideration_link
+                                        state_area = zif_re_revenuestream=>state_area-chargeable
+                              CHANGING  failed = failed
+                                        reported = reported ).
+    ENDLOOP.
   ENDMETHOD.
 
-  METHOD validity.
+  METHOD validityrange.
     READ ENTITIES OF ZI_RE_RevenueStreamTP_M IN LOCAL MODE
     ENTITY Item BY \_Consideration
     ALL FIELDS WITH CORRESPONDING #( keys )
     RESULT DATA(considerations)
     LINK DATA(consideration_link).
 
-    validate_consideration( EXPORTING considerations = considerations
-                                      consideration_link = consideration_link
-                                      state_area = zif_re_revenuestream=>state_area-validity
-                            CHANGING  failed = failed
-                                      reported = reported ).
+    LOOP AT considerations INTO DATA(dto).
+      validate_consideration( EXPORTING dto = dto
+                                        consideration_link = consideration_link
+                                        state_area = zif_re_revenuestream=>state_area-validity
+                              CHANGING  failed = failed
+                                        reported = reported ).
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD validentryexists.
+    READ ENTITIES OF ZI_RE_RevenueStreamTP_M IN LOCAL MODE
+    ENTITY Item BY \_Consideration
+    ALL FIELDS WITH CORRESPONDING #( keys )
+    RESULT DATA(considerations)
+    LINK DATA(consideration_link).
+
+    SORT considerations BY Validfrom.
+
+    LOOP AT keys INTO DATA(key).
+      ASSIGN considerations[ Cnsderationuuid = key-Cnsderationuuid ]
+      TO FIELD-SYMBOL(<dto>).
+      IF sy-subrc EQ 0.
+
+        LOOP AT considerations INTO DATA(data)
+        WHERE Cnsderationuuid NE key-Cnsderationuuid.
+          IF <dto>-Validfrom LE data-Validto
+          AND <dto>-Validto GE data-Validfrom.
+            DATA(exists) = abap_true.
+          ENDIF.
+
+          validate_consideration( EXPORTING dto = <dto>
+                                            consideration_link = consideration_link
+                                            state_area = zif_re_revenuestream=>state_area-validexists
+                                            exists = exists
+                                  CHANGING  failed = failed
+                                            reported = reported ).
+        ENDLOOP.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
 ENDCLASS.
@@ -95,12 +141,57 @@ CLASS lhc_roundoff DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
   PRIVATE SECTION.
 
+    METHODS roundoff_reported
+      IMPORTING dto        TYPE zif_re_revenuestream=>ts_roundoff
+                state_area TYPE string
+                msgv1      TYPE sy-msgv1
+      CHANGING  failed     TYPE zif_re_revenuestream=>tt_failed
+                reported   TYPE zif_re_revenuestream=>tt_reported.
+
     METHODS roundoffRange FOR VALIDATE ON SAVE
       IMPORTING keys FOR Roundoff~roundoffRange.
+    METHODS sequencekey FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Roundoff~sequencekey.
 
 ENDCLASS.
 
 CLASS lhc_roundoff IMPLEMENTATION.
+
+  METHOD roundoff_reported.
+    APPEND VALUE #( %tky             = dto-%tky
+                    %state_area      = state_area
+                    %path            = VALUE #( header-%tky = CORRESPONDING #( dto-%tky )
+                                                item-%tky   = CORRESPONDING #( dto-%tky ) )
+                    %element-Roundto = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-roundoff
+                                               THEN if_abap_behv=>mk-off )
+                    %element-Rndsequence = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-roundoffseq
+                                               THEN if_abap_behv=>mk-off ) ) TO reported-roundoff.
+
+    CASE state_area.
+      WHEN zif_re_revenuestream=>state_area-roundoff.
+        IF dto-Roundfrom GT dto-Roundto.
+          DATA(e) = abap_true.
+        ENDIF.
+      WHEN zif_re_revenuestream=>state_area-roundoffseq.
+        e = abap_true.
+    ENDCASE.
+
+    IF e EQ abap_true.
+      APPEND VALUE #( %tky = dto-%tky ) TO failed-roundoff.
+      APPEND VALUE #( %tky             = dto-%tky
+                      %state_area      = state_area
+                      %msg             = new_message( id       = zif_re_revenuestream=>msgid
+                                                      number   = zif_re_revenuestream=>msgcommon
+                                                      severity = if_abap_behv_message=>severity-error
+                                                      v1       = msgv1 )
+                      %path            = VALUE #( header-%tky = CORRESPONDING #( dto-%tky )
+                                                  item-%tky   = CORRESPONDING #( dto-%tky ) )
+                      %element-Roundto = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-roundoff
+                                               THEN if_abap_behv=>mk-on )
+                      %element-Rndsequence = COND #( WHEN state_area EQ zif_re_revenuestream=>state_area-roundoffseq
+                                               THEN if_abap_behv=>mk-on ) ) TO reported-roundoff.
+    ENDIF.
+  ENDMETHOD.
 
   METHOD roundoffRange.
     READ ENTITIES OF ZI_RE_RevenueStreamTP_M IN LOCAL MODE
@@ -113,25 +204,41 @@ CLASS lhc_roundoff IMPLEMENTATION.
     WHERE Roundfrom IS NOT INITIAL
        OR Roundto IS NOT INITIAL.
 
+      DATA(msgv1) = |{ zif_re_revenuestream=>message_v-valuerange } : Sequence { dto-Rndsequence }|.
+      roundoff_reported( EXPORTING dto = dto
+                                   state_area = zif_re_revenuestream=>state_area-roundoff
+                                   msgv1 = CONV #( msgv1 )
+                         CHANGING  failed = failed
+                                   reported = reported ).
+      CLEAR: msgv1.
+    ENDLOOP.
 
-      APPEND VALUE #( %tky             = dto-%tky
-                      %state_area      = zif_re_revenuestream=>state_area-roundoff
-                      %path            = VALUE #( header-%tky = roundoff_link[ KEY id  source-%tky = dto-%tky ]-target-%tky
-                                                  item-%tky   = roundoff_link[ KEY id  source-%tky = dto-%tky ]-target-%tky )
-                      %element-Roundto = if_abap_behv=>mk-off ) TO reported-roundoff.
+  ENDMETHOD.
 
-      IF dto-Roundfrom GT dto-Roundto.
-        APPEND VALUE #( %tky = dto-%tky ) TO failed-roundoff.
+  METHOD sequencekey.
+    READ ENTITIES OF ZI_RE_RevenueStreamTP_M IN LOCAL MODE
+    ENTITY Item BY \_Round
+    ALL FIELDS WITH CORRESPONDING #( keys )
+    RESULT DATA(roundoff)
+    LINK DATA(roundoff_link).
 
-        APPEND VALUE #( %tky             = dto-%tky
-                        %state_area      = zif_re_revenuestream=>state_area-roundoff
-                        %msg             = new_message( id       = zif_re_revenuestream=>msgid
-                                                        number   = zif_re_revenuestream=>msgno
-                                                        severity = if_abap_behv_message=>severity-error
-                                                        v1       = 'Invalid value range' )
-                        %path            = VALUE #( header-%tky = roundoff_link[ KEY id  source-%tky = dto-%tky ]-target-%tky
-                                                    item-%tky   = roundoff_link[ KEY id  source-%tky = dto-%tky ]-target-%tky )
-                        %element-Roundto = if_abap_behv=>mk-on ) TO reported-roundoff.
+    LOOP AT keys INTO DATA(key).
+      ASSIGN roundoff[ Roundoffuuid = key-Roundoffuuid ]
+      TO FIELD-SYMBOL(<dto>).
+      IF sy-subrc EQ 0.
+        LOOP AT roundoff INTO DATA(dto)
+        WHERE Roundoffuuid NE key-Roundoffuuid.
+
+          IF dto-Rndsequence EQ <dto>-Rndsequence.
+            DATA(msgv1) = |Sequence { <dto>-Rndsequence } already exists.|.
+            roundoff_reported( EXPORTING dto = <dto>
+                                         state_area = zif_re_revenuestream=>state_area-roundoffseq
+                                         msgv1 = CONV #( msgv1 )
+                               CHANGING  failed = failed
+                                         reported = reported ).
+          ENDIF.
+
+        ENDLOOP.
       ENDIF.
     ENDLOOP.
 
@@ -146,6 +253,8 @@ CLASS lhc_header DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys REQUEST requested_authorizations FOR header RESULT result.
     METHODS setdefaultitem FOR DETERMINE ON MODIFY
       IMPORTING keys FOR header~setdefaultitem.
+    METHODS revenuekey FOR VALIDATE ON SAVE
+      IMPORTING keys FOR header~revenuekey.
 
 ENDCLASS.
 
@@ -186,34 +295,49 @@ CLASS lhc_header IMPLEMENTATION.
 
   ENDMETHOD.
 
-*  METHOD setConsierationStatus.
-*
-*    READ ENTITIES OF ZI_RE_RevenueStreamTP_M IN LOCAL MODE
-*    ENTITY Header BY \_Item
-*    FIELDS ( Streamuuid Streamitemuuid ) WITH CORRESPONDING #( keys )
-*    RESULT DATA(items)
-*    ENTITY Item BY \_Consideration
-*    FIELDS ( Status ) WITH CORRESPONDING #( keys )
-*    RESULT DATA(considerations).
-*
-*    DELETE considerations WHERE Locallastchangedat IS INITIAL.
-*    IF considerations IS NOT INITIAL.
-*      SORT considerations BY Validto DESCENDING.
-*      LOOP AT considerations ASSIGNING FIELD-SYMBOL(<is_active>).
-*        IF sy-tabix EQ 1.
-*          <is_active>-Status = abap_true.
-*        ELSE.
-*          <is_active>-Status = abap_false.
-*        ENDIF.
-*      ENDLOOP.
-*
-*      MODIFY ENTITIES OF ZI_RE_RevenueStreamTP_M
-*      ENTITY Consideration
-*      UPDATE FIELDS ( Status )
-*      WITH VALUE #( FOR dto IN considerations (
-*                      %tky = dto-%tky
-*                      Status = dto-Status ) ).
-*    ENDIF.
-*  ENDMETHOD.
+  METHOD revenuekey.
+    READ ENTITIES OF ZI_RE_RevenueStreamTP_M IN LOCAL MODE
+    ENTITY Header
+    FIELDS ( Streamuuid CompanyCode Code )
+    WITH CORRESPONDING #( keys )
+    RESULT DATA(header).
 
+    LOOP AT header INTO DATA(dto).
+
+      APPEND VALUE #( %tky             = dto-%tky
+                      %state_area      = zif_re_revenuestream=>state_area-header ) TO reported-header.
+
+      IF dto-CompanyCode IS INITIAL
+      OR dto-Code IS INITIAL.
+        APPEND VALUE #( %tky = dto-%tky ) TO failed-header.
+
+        APPEND VALUE #( %tky             = dto-%tky
+                        %state_area      = zif_re_revenuestream=>state_area-header
+                        %msg             = new_message( id       = zif_re_revenuestream=>msgid
+                                                        number   = zif_re_revenuestream=>msgrequi
+                                                        severity = if_abap_behv_message=>severity-error )
+                        %element-CompanyCode = COND #( WHEN dto-CompanyCode IS INITIAL THEN if_abap_behv=>mk-on )
+                        %element-Code        = COND #( WHEN dto-Code IS INITIAL THEN if_abap_behv=>mk-on ) ) TO reported-header.
+      ELSE.
+        SELECT SINGLE FROM ZI_RE_RevenueStreamTP_M
+        FIELDS @abap_true
+        WHERE CompanyCode EQ @dto-CompanyCode
+          AND Code EQ @dto-Code
+        INTO @DATA(is_true).
+
+        IF is_true EQ abap_true.
+          APPEND VALUE #( %tky = dto-%tky ) TO failed-header.
+
+          APPEND VALUE #( %tky             = dto-%tky
+                          %state_area      = zif_re_revenuestream=>state_area-header
+                          %msg             = new_message( id       = zif_re_revenuestream=>msgid
+                                                          number   = zif_re_revenuestream=>msgcommon
+                                                          severity = if_abap_behv_message=>severity-error
+                                                          v1       = 'Company Code and Revenue Stream already exists.' )
+                          %element-CompanyCode = COND #( WHEN dto-CompanyCode IS NOT INITIAL THEN if_abap_behv=>mk-on )
+                          %element-Code        = COND #( WHEN dto-Code IS NOT INITIAL THEN if_abap_behv=>mk-on ) ) TO reported-header.
+        ENDIF.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
 ENDCLASS.

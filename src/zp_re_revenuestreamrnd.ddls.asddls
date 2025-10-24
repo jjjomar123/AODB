@@ -14,5 +14,6 @@ define view entity ZP_RE_RevenueStreamRND
       @Semantics.quantity.unitOfMeasure: 'baseunitofmeasure'
       roundto            as Roundto,
       _tabitem.baseunitofmeasure,
+      rndsequence        as Rndsequence,
       locallastchangedat as Locallastchangedat
 }

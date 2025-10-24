@@ -7,6 +7,8 @@ define root view entity ZI_RE_AeroRegistryTP_M
   association [1] to ZI_IataMaster                 as _iata     on $projection.Iatacode = _iata.Code
   association [1] to ZI_MtowMaster                 as _mtow     on $projection.Mtowquantity >= _mtow.Qtyfrom
                                                                and $projection.Mtowquantity <= _mtow.Qtyto
+  association [1] to ZI_MtowMaster                 as _mtow2    on $projection.Mtowquantity >= _mtow2.Qtyfrom
+                                                               and _mtow2.Qtyto = 0                                                              
 {
   key Uuid,
       Airlinecode,

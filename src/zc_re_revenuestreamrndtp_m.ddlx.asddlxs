@@ -14,6 +14,10 @@ annotate entity ZC_RE_RevenueStreamRNDTP_M with
   Streamitemuuid;
   @UI.hidden: true
   Roundoffuuid;
+  @UI: { lineItem:       [ { position: 5 } ],
+         identification: [ { position: 5 } ] }  
+  @EndUserText.label: 'Sequence' 
+  Rndsequence;
   @UI: { lineItem:       [ { position: 10 } ],
          identification: [ { position: 10 } ] }  
   @EndUserText.label: 'From' 

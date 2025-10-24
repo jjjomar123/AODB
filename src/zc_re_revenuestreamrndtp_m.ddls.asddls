@@ -12,6 +12,7 @@ define view entity ZC_RE_RevenueStreamRNDTP_M
       @Semantics.quantity.unitOfMeasure: 'Baseunitofmeasure'
       Roundto,
       Baseunitofmeasure,
+      Rndsequence,
       Locallastchangedat,
       /* Associations */
       _Item : redirected to parent ZC_RE_RevenueStreamItemTP_M,

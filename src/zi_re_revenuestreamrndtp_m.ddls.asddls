@@ -16,6 +16,7 @@ define view entity ZI_RE_RevenueStreamRNDTP_M
       @Semantics.quantity.unitOfMeasure: 'Baseunitofmeasure'
       Roundto,
       _Item.Baseunitofmeasure,
+      Rndsequence,
       @Semantics.systemDateTime.localInstanceLastChangedAt: true
       Locallastchangedat,
       

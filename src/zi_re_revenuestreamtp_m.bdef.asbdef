@@ -15,18 +15,26 @@ etag master LocalLastChangedAt
   delete;
   field ( readonly, numbering : managed ) Streamuuid;
   field ( readonly ) LocalCreatedAt, LocalCreatedBy, LastChangedAt, LocalLastChangedAt, LocalLastChangedBy;
+  field ( mandatory ) Companycode, Code;
+
   association _Item { create; with draft; }
 
   determination setDefaultitem on modify { create; }
+
+  validation revenuekey on save { create; field Companycode, Code; }
 
   draft action Edit;
   draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare{
+    validation revenuekey;
+    validation Roundoff~sequencekey;
     validation Roundoff~roundoffRange;
     validation Consideration~chargeableTime;
-    validation Consideration~validity;
+    validation Consideration~validityrange;
+    validation Consideration~validentryexists;
+
   }
 
   mapping for zre_rvnstreamhdr corresponding ;
@@ -77,11 +85,12 @@ etag master LocalLastChangedAt
 {
   update;
   delete;
-  field ( readonly ) Streamuuid, Streamitemuuid, Locallastchangedat, Baseunitofmeasure;
+  field ( readonly ) Streamuuid, Streamitemuuid, Status, Locallastchangedat, Baseunitofmeasure;
   field ( readonly, numbering : managed ) Cnsderationuuid;
 
   validation chargeableTime on save { create; update; field Starttime, Endtime; }
-  validation validity on save { create; update; field Validfrom, Validto; }
+  validation validityrange on save { create; update; field Validfrom, Validto; }
+  validation validentryexists on save { create; update; field Validfrom, Validto; }
 
   association _Item { with draft; }
   association _Root { with draft; }
@@ -101,6 +110,7 @@ etag master LocalLastChangedAt
   field ( readonly ) Streamuuid, Streamitemuuid, Locallastchangedat, Baseunitofmeasure;
   field ( readonly, numbering : managed ) Roundoffuuid;
 
+  validation sequencekey on save { create; update; field Rndsequence; }
   validation roundoffRange on save { create; update; field Roundfrom, Roundto; }
 
   association _Item { with draft; }

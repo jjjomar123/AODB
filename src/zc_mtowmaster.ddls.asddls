@@ -5,7 +5,7 @@ define view entity ZC_MtowMaster
   as projection on ZI_MtowMaster
 {
   key Category,
-  key Qtyfrom,
+      Qtyfrom,
       Qtyto,
       Description,
       LastChangedAt,

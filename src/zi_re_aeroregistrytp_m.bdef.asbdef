@@ -18,14 +18,17 @@ etag master LocalLastChangedAt
   field ( readonly, numbering : managed ) Uuid;
   field ( readonly ) Mtowcategory, LocalCreatedAt, LocalCreatedBy, LastChangedAt, LocalLastChangedAt, LocalLastChangedBy;
   field ( mandatory ) Airlinecode, Rpcid, Iatacode, Mtowquantity, Mtowunit;
-
   action fileUpload parameter ZABS_RE_RegistryFileUpload;
+
+  validation airlinemaster on save { create; field Airlinecode, Rpcid, Iatacode, Mtowquantity, Mtowunit; }
 
   draft action Edit;
   draft action Activate optimized;
   draft action Discard;
   draft action Resume;
-  draft determine action Prepare;
+  draft determine action Prepare{
+    validation airlinemaster;
+  }
 
   mapping for zre_aeroregistry corresponding;
 }

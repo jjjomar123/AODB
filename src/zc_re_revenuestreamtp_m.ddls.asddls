@@ -19,7 +19,7 @@ define root view entity ZC_RE_RevenueStreamTP_M
           useForValidation: true
         }
       ]  
-      Comapnycode,
+      CompanyCode,
       _compcode.CompanyCodeName,
       Code,
       Name,

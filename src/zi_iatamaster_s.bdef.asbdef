@@ -39,7 +39,7 @@ authorization dependent by _IataMasterAll
    SingletonID,
    LastChangedAt,
    LocalLastChangedAt;
-
+  field ( readonly : update ) Code;
   update( features : global );
   delete( features : global );
 

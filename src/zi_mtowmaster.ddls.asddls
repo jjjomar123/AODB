@@ -5,7 +5,7 @@ define view entity ZI_MtowMaster
   association to parent ZI_MtowMaster_S as _MtowMasterAll on $projection.SingletonID = _MtowMasterAll.SingletonID
 {
   key category              as Category,
-  key qtyfrom               as Qtyfrom,
+      qtyfrom               as Qtyfrom,
       qtyto                 as Qtyto,
       description           as Description,
       @Semantics.systemDateTime.lastChangedAt: true
