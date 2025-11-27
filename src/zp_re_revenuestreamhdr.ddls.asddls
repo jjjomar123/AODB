@@ -8,6 +8,7 @@ define view entity ZP_RE_RevenueStreamHDR
       companycode        as CompanyCode,
       code               as Code,
       name               as Name,
+      cute               as Cute,
       localcreatedby     as Localcreatedby,
       localcreatedat     as Localcreatedat,
       locallastchangedby as Locallastchangedby,

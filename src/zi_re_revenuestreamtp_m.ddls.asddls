@@ -10,6 +10,7 @@ define root view entity ZI_RE_RevenueStreamTP_M
       CompanyCode,
       Code,
       Name,
+      Cute,
       @Semantics.user.createdBy: true
       Localcreatedby,
       @Semantics.systemDateTime.createdAt: true

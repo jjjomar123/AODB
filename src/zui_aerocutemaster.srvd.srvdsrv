@@ -1,0 +1,4 @@
+define service ZUI_AEROCUTEMASTER {
+  expose ZC_AEROCUTEMASTER_S as AerocuteMasterAll;
+  expose ZC_AEROCUTEMASTER as AerocuteMaster;
+}

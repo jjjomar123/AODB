@@ -5,6 +5,7 @@ with draft;
 define behavior for ZI_RE_RevenueStreamTP_M alias Header
 persistent table zre_rvnstreamhdr
 draft table zre_rvnstreamhdd
+with additional save
 lock master
 total etag LastChangedAt
 authorization master ( instance )
@@ -31,7 +32,6 @@ etag master LocalLastChangedAt
     validation revenuekey;
     validation Roundoff~sequencekey;
     validation Roundoff~roundoffRange;
-    validation Consideration~chargeableTime;
     validation Consideration~validityrange;
     validation Consideration~validentryexists;
 
@@ -88,7 +88,6 @@ etag master LocalLastChangedAt
   field ( readonly ) Streamuuid, Streamitemuuid, Status, Locallastchangedat, Baseunitofmeasure;
   field ( readonly, numbering : managed ) Cnsderationuuid;
 
-  validation chargeableTime on save { create; update; field Starttime, Endtime; }
   validation validityrange on save { create; update; field Validfrom, Validto; }
   validation validentryexists on save { create; update; field Validfrom, Validto; }
 

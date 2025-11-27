@@ -20,6 +20,9 @@ INTERFACE zif_re_revenuestream
                validity    TYPE string VALUE 'VALIDITYRANGE',
                validexists TYPE string VALUE 'VALIDENTRYEXISTS',
                header      TYPE string VALUE 'HEADER',
+               validcount  TYPE string VALUE 'VALIDCOUNT',
+               mandatory   TYPE string VALUE 'MANDATORY',
+               countexists TYPE string VALUE 'COUNTEXISTS',
              END OF state_area.
 
   CONSTANTS: BEGIN OF message_v,

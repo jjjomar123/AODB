@@ -23,6 +23,7 @@ define root view entity ZC_RE_RevenueStreamTP_M
       _compcode.CompanyCodeName,
       Code,
       Name,
+      Cute,
       Localcreatedby,
       Localcreatedat,
       Locallastchangedby,

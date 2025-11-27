@@ -1,0 +1,5 @@
+@MappingRole: true
+define role ZC_AerocuteMaster {
+  grant select on ZC_AerocuteMaster
+  where INHERITING CONDITIONS FROM ENTITY ZI_AerocuteMaster;
+}

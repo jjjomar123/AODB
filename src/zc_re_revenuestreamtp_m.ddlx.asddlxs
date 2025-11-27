@@ -73,6 +73,10 @@ annotate entity ZC_RE_RevenueStreamTP_M with
          fieldGroup   :  [ { position: 30, qualifier: 'STREAM_INFO' } ] }
   @EndUserText.label: 'Name' 
   Name;
+  @UI: { lineItem:       [ { position: 31 } ],
+         fieldGroup   :  [ { position: 31, qualifier: 'STREAM_INFO' } ] }
+  @EndUserText.label: 'Slab rate relevant?' 
+  Cute;
   @UI: { lineItem:       [ { position: 40 } ],
          fieldGroup   :  [ { position: 10, qualifier: 'ADMINDATA' } ] }  
   Localcreatedby;

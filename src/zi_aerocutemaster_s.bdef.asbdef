@@ -1,0 +1,93 @@
+managed with additional save implementation in class ZBP_I_AEROCUTEMASTER_S unique;
+strict;
+with draft;
+
+define behavior for ZI_AerocuteMaster_S alias AerocuteMasterAll
+draft table zre_aerocute_d_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare{
+    validation AerocuteMaster~validityrange;
+    validation AerocuteMaster~countrange;
+    validation AerocuteMaster~mandatoryfield;
+    validation AerocuteMaster~valueexists;
+    validation AerocuteMaster~overlapdate;
+    validation AerocuteMaster~overlapcount;
+  }
+
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _AerocuteMaster { create ( features : instance ); with draft; }
+}
+
+define behavior for ZI_AerocuteMaster alias AerocuteMaster
+persistent table zre_aerocuterate
+draft table zre_aerocutera_d
+etag master Locallastchangedat
+lock dependent by _AerocuteMasterAll
+authorization dependent by _AerocuteMasterAll
+
+{
+  field ( readonly )
+  SingletonID,
+  Cuteuuid,
+  Companycode,
+  Code,
+  Nature,
+  Calculationrule,
+  Differingmeasurement,
+  LastChangedAt,
+  Locallastchangedat;
+
+  field ( numbering : managed )
+  Cuteuuid;
+
+  field ( mandatory ) Cutesequence;
+//  field ( readonly : update ) Cutesequence;
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) CopyAerocuteMaster [1];
+
+  mapping for zre_aerocuterate
+    {
+      Cuteuuid           = CUTEUUID;
+      Streamuuid         = STREAMUUID;
+      Streamitemuuid     = STREAMITEMUUID;
+      Calcruleuuid       = CALCRULEUUID;
+      Cutesequence       = Cutesequence;
+      Validto            = VALIDTO;
+      Validfrom          = VALIDFROM;
+      Countfrom          = COUNTFROM;
+      Countto            = COUNTTO;
+      Rate               = RATE;
+      LastChangedAt      = LAST_CHANGED_AT;
+      Locallastchangedat = LOCALLASTCHANGEDAT;
+    }
+
+  association _AerocuteMasterAll { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation validityrange on save { create; update; field Validfrom, Validto; }
+  validation countrange on save { create; update; field Countfrom, Countto; }
+  validation mandatoryfield on save { create; update; field Cutesequence; }
+  validation valueexists on save { create; update; field Cutesequence; }
+  validation overlapdate on save { create; update; field Validfrom, Validto; }
+  validation overlapcount on save { create; update; field Countfrom, Countto; }
+}
